@@ -1,0 +1,13 @@
+[project]
+name = "gc-transfer"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "opencv-contrib-python>=4.10.0.84",
+    "opencv-python>=4.10.0.84",
+    "pillow>=10.4.0",
+    "pyautogui>=0.9.54",
+    "pyinstaller>=6.10.0",
+]
