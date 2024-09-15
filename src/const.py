@@ -25,6 +25,7 @@ class Images(Enum):
     ENTER_AMOUNT = resource_path('images/button_images/enter_amount.png')
     PAY_BUTTON = resource_path('images/button_images/pay_button.png')
     CHECKOUT_OPTIONS = resource_path('images/button_images/checkout_options.png')
+    OK_BUTTON = resource_path('images/button_images/OK_BUTTON.png')
 
 # class Images(Enum):
 #     GIFT_CARD_SALE_BUTTON = 'src/images/button_images/gift_card_sale_button.png'

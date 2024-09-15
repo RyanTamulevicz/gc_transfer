@@ -1,29 +1,39 @@
-from const import State
+from const import State, Images
 from main import logging
 import pyautogui
 from locate import safe_locate
+import time
+import traceback
 
-
-def perform_action(state, test_mode=True):
-    if state == State.MAIN_SCREEN:
-        return click_button('gift_card_sale_button.png', test_mode=test_mode)
-    elif state == State.GIFT_CARD_ENTRY:
-        if test_mode:
-            logging.info("Would type: TEMP")
-        else:
-            pyautogui.write('TEMP')
-        return click_button('ok_button.png', test_mode=test_mode)
-    elif state == State.AMOUNT_ENTRY:
-        if test_mode:
-            logging.info("Would type: 00.1")
-        else:
-            pyautogui.write('00.1')
-        return click_button('ok_button.png', test_mode=test_mode)
-    elif state == State.PAYMENT_SCREEN:
-        return click_button('cash_button.png', test_mode=test_mode)
-    else:
-        logging.error(f"Unknown state: {state}")
-        return False
+def process_row(row, current_state):
+    max_attempts = 5
+    logging.info(f"Processing row: {row['card_number']}, {row['amount']}")
+    
+    try:
+        logging.info("Clicking GIFT_CARD_SALE_BUTTON")
+        click_button(Images.GIFT_CARD_SALE_BUTTON)
+        time.sleep(1)
+        
+        logging.info(f"Entering card number: {row['card_number']}")
+        pyautogui.write(row['card_number'])
+        time.sleep(0.5)
+        
+        logging.info("Clicking OK_BUTTON")
+        click_button(Images.OK_BUTTON)
+        time.sleep(1)
+        
+        logging.info(f"Entering amount: {row['amount']}")
+        pyautogui.write(row['amount'])
+        time.sleep(0.5)
+        
+        logging.info("Pressing 'enter'")
+        pyautogui.press('enter')
+        time.sleep(1)
+        
+    except Exception as e:
+        logging.error(f"Error processing row: {row['card_number']}, {row['amount']}")
+        logging.error("Traceback details:\n" + traceback.format_exc())
+        raise e
 
 def click_button(image_path, test_mode=True):
     location = safe_locate(image_path)
