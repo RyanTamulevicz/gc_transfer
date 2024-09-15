@@ -6,6 +6,7 @@ import time
 from data import Data
 import pygetwindow
 import traceback
+import pyautogui
 
 log_dir = 'log'
 if not os.path.exists(log_dir):
@@ -37,8 +38,46 @@ def check_image_files():
         return False
     return True
 
+def test_pyautogui():
+    try:
+        logging.info("Starting pyautogui test")
+        
+        # Get the current mouse position
+        current_pos = pyautogui.position()
+        logging.info(f"Current mouse position: {current_pos}")
+        
+        # Move the mouse to a specific position
+        test_x, test_y = 100, 100
+        logging.info(f"Attempting to move mouse to ({test_x}, {test_y})")
+        pyautogui.moveTo(test_x, test_y, duration=1)
+        
+        # Get the new position
+        new_pos = pyautogui.position()
+        logging.info(f"New mouse position: {new_pos}")
+        
+        # Check if the mouse moved
+        if new_pos == (test_x, test_y):
+            logging.info("Mouse movement successful")
+        else:
+            logging.warning("Mouse did not move to the expected position")
+        
+        # Move mouse back to original position
+        pyautogui.moveTo(current_pos.x, current_pos.y, duration=1)
+        logging.info("Moved mouse back to original position")
+        
+        # Test click (be careful with this!)
+        logging.info("Testing click (moving to (200, 200) and clicking)")
+        pyautogui.moveTo(200, 200, duration=1)
+        pyautogui.click()
+        logging.info("Click test completed")
+        
+    except Exception as e:
+        logging.error(f"Error in pyautogui test: {str(e)}")
+        logging.error("Traceback:", exc_info=True)
+
 def main(test_mode=True):
     from actions import process_row
+    test_pyautogui()
     logging.info(f"Current working directory: {os.getcwd()}")
     
     if not check_image_files():
@@ -55,17 +94,16 @@ def main(test_mode=True):
     total_rows = data.data.shape[0]
 
     while row_index < total_rows:
-        input("Press Enter to process the next 10 rows...")
+        input("Press Enter to process the next 20 rows...")
         
-        rows_to_process = min(10, total_rows - row_index)
+        rows_to_process = min(20, total_rows - row_index)
         
         for i in range(rows_to_process):
             current_row = data.data.iloc[row_index]
             logging.info(f"Processing row: {row_index} {current_row['card_number']}, {current_row['amount']}")
             cash_register_window.activate() 
-            current_state = determine_state()
-            if current_state == State.MAIN_SCREEN: 
-                process_row(current_row, current_state)
+            time.sleep(2)
+            process_row(current_row)
             
             row_index += 1
         

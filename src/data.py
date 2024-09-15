@@ -8,3 +8,4 @@ class Data:
         self.data["amount"] = self.data["amount"].replace('[\$,]', '', regex=True).astype(float)
         self.data = self.data[self.data["amount"] != 0.00]
         self.data["amount"] = self.data["amount"].map(lambda x: f"{x:.2f}")
+        self.data["card_number"] = self.data["card_number"].astype(str).map(lambda x: x.rstrip('.0'))
