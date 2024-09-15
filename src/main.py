@@ -1,3 +1,5 @@
+from pynput import mouse
+from pynput.mouse import Button, Controller
 import logging
 import os
 from state import determine_state
@@ -9,6 +11,8 @@ import traceback
 import pyautogui
 
 log_dir = 'log'
+mouse = Controller()
+
 if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 
@@ -38,21 +42,22 @@ def check_image_files():
         return False
     return True
 
-def test_pyautogui():
+def test_mouse_control():
     try:
-        logging.info("Starting pyautogui test")
+        logging.info("Starting mouse control test")
         
         # Get the current mouse position
-        current_pos = pyautogui.position()
+        current_pos = mouse.position
         logging.info(f"Current mouse position: {current_pos}")
         
         # Move the mouse to a specific position
         test_x, test_y = 100, 100
         logging.info(f"Attempting to move mouse to ({test_x}, {test_y})")
-        pyautogui.moveTo(test_x, test_y, duration=1)
+        mouse.position = (test_x, test_y)
+        time.sleep(1)
         
         # Get the new position
-        new_pos = pyautogui.position()
+        new_pos = mouse.position
         logging.info(f"New mouse position: {new_pos}")
         
         # Check if the mouse moved
@@ -62,22 +67,23 @@ def test_pyautogui():
             logging.warning("Mouse did not move to the expected position")
         
         # Move mouse back to original position
-        pyautogui.moveTo(current_pos.x, current_pos.y, duration=1)
+        mouse.position = current_pos
         logging.info("Moved mouse back to original position")
         
-        # Test click (be careful with this!)
+        # Test click
         logging.info("Testing click (moving to (200, 200) and clicking)")
-        pyautogui.moveTo(200, 200, duration=1)
-        pyautogui.click()
+        mouse.position = (200, 200)
+        time.sleep(1)
+        mouse.click(Button.left)
         logging.info("Click test completed")
         
     except Exception as e:
-        logging.error(f"Error in pyautogui test: {str(e)}")
+        logging.error(f"Error in mouse control test: {str(e)}")
         logging.error("Traceback:", exc_info=True)
 
 def main(test_mode=True):
     from actions import process_row
-    test_pyautogui()
+    test_mouse_control()
     logging.info(f"Current working directory: {os.getcwd()}")
     
     if not check_image_files():
